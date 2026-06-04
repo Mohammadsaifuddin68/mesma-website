@@ -321,7 +321,7 @@ export default function Home() {
           <h2 className="text-4xl md:text-5xl font-bold font-heading text-foreground mb-6">Frequently Asked Questions</h2>
         </div>
         
-        <Accordion type="single" className="w-full">
+        <Accordion className="w-full">
           <AccordionItem value="item-1" className="border-purple-100 mb-4 bg-white/50 backdrop-blur-sm rounded-lg px-4">
             <AccordionTrigger className="text-lg font-semibold hover:text-neon-purple text-left">How does AI Receptionist work?</AccordionTrigger>
             <AccordionContent className="text-muted-foreground leading-relaxed">
