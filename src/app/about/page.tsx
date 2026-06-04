@@ -3,6 +3,12 @@ import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { GlassCard } from "@/components/GlassCard";
 import { Lightbulb, Rocket, Users, Target } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us | Mesma Technologies",
+  description: "Learn about Mesma Technologies and our mission to engineer the next generation of business communication with AI voice automation.",
+};
 
 export default function About() {
   return (

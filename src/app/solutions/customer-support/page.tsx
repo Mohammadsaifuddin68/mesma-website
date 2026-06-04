@@ -5,6 +5,12 @@ import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Headset, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "AI Customer Support Automation | Mesma",
+  description: "Deliver 24/7 customer support through intelligent AI voice agents that resolve inquiries instantly.",
+};
 
 export default function AICustomerSupport() {
   return (

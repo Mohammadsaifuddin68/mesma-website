@@ -7,6 +7,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { PhoneCall, Headset, Calendar, ShieldCheck, Megaphone, GitMerge, CheckCircle2, Play, Activity } from "lucide-react";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "AI Receptionist & Voice Automation Solutions | Mesma Technologies",
+  description: "Automate inbound calls, customer support, appointment booking, lead qualification, and outbound communication with AI-powered voice agents from Mesma.",
+};
 
 export default function Home() {
   return (

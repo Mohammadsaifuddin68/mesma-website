@@ -1,5 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service | Mesma Technologies",
+  description: "Read the Mesma Technologies Terms of Service.",
+};
 
 export default function TermsOfService() {
   const sections = [

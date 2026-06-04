@@ -1,5 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Mesma Technologies",
+  description: "Read the Mesma Technologies Privacy Policy.",
+};
 
 export default function PrivacyPolicy() {
   return (

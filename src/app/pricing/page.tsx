@@ -4,6 +4,12 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { GlassCard } from "@/components/GlassCard";
 import { CheckCircle2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pricing | Mesma AI Voice Automation",
+  description: "Transparent pricing for Mesma AI Receptionist and voice agents. Simple setup and pay-as-you-go usage.",
+};
 
 export default function Pricing() {
   return (
