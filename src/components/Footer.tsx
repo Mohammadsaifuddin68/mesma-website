@@ -23,11 +23,11 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-foreground mb-4">Solutions</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link href="/products/ai-receptionist" className="hover:text-neon-purple transition-colors">AI Receptionist</Link></li>
-              <li><Link href="/products/ai-customer-support" className="hover:text-neon-purple transition-colors">Customer Support</Link></li>
-              <li><Link href="/products/appointment-booking" className="hover:text-neon-purple transition-colors">Appointment Booking</Link></li>
-              <li><Link href="/products/lead-qualification" className="hover:text-neon-purple transition-colors">Lead Qualification</Link></li>
-              <li><Link href="/products/outbound-automation" className="hover:text-neon-purple transition-colors">Outbound Automation</Link></li>
+              <li><Link href="/solutions/ai-receptionist" className="hover:text-neon-purple transition-colors">AI Receptionist</Link></li>
+              <li><Link href="/solutions/customer-support" className="hover:text-neon-purple transition-colors">Customer Support</Link></li>
+              <li><Link href="/solutions/appointment-booking" className="hover:text-neon-purple transition-colors">Appointment Booking</Link></li>
+              <li><Link href="/solutions/lead-qualification" className="hover:text-neon-purple transition-colors">Lead Qualification</Link></li>
+              <li><Link href="/solutions/outbound-automation" className="hover:text-neon-purple transition-colors">Outbound Automation</Link></li>
             </ul>
           </div>
 

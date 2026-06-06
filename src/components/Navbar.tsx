@@ -6,11 +6,11 @@ import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 
 const products = [
-  { name: "AI Receptionist", href: "/products/ai-receptionist" },
-  { name: "AI Customer Support", href: "/products/ai-customer-support" },
-  { name: "Appointment Booking", href: "/products/appointment-booking" },
-  { name: "Lead Qualification", href: "/products/lead-qualification" },
-  { name: "Outbound Automation", href: "/products/outbound-automation" },
+  { name: "AI Receptionist", href: "/solutions/ai-receptionist" },
+  { name: "AI Customer Support", href: "/solutions/customer-support" },
+  { name: "Appointment Booking", href: "/solutions/appointment-booking" },
+  { name: "Lead Qualification", href: "/solutions/lead-qualification" },
+  { name: "Outbound Automation", href: "/solutions/outbound-automation" },
 ];
 
 export function Navbar() {
