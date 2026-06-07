@@ -23,6 +23,10 @@ export const metadata: Metadata = {
     default: "AI Receptionist & Voice Automation Solutions | Mesma Technologies",
     template: "%s | Mesma Technologies"
   },
+  icons: {
+    icon: { url: "/favicon.png", type: "image/png" },
+    apple: "/favicon.png",
+  },
   description: "Automate inbound calls, customer support, appointment booking, lead qualification, and outbound communication with AI-powered voice agents from Mesma.",
   openGraph: {
     type: "website",

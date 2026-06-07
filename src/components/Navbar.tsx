@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
@@ -30,31 +31,14 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full glass-panel border-b border-white/20">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" className="h-14 w-auto drop-shadow-md">
-            <defs>
-              <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#A855F7" />
-                <stop offset="50%" stopColor="#9333EA" />
-                <stop offset="100%" stopColor="#7E22CE" />
-              </linearGradient>
-            </defs>
-            <text x="250" y="125" fontFamily="'Space Grotesk', sans-serif" fontSize="80" fontWeight="900" fill="url(#purpleGradient)" textAnchor="middle" letterSpacing="12">
-              MESMA
-            </text>
-            <g stroke="url(#purpleGradient)" strokeWidth="4" strokeLinecap="round" transform="translate(170, 150)">
-              <line x1="0" y1="0" x2="0" y2="-10" />
-              <line x1="15" y1="0" x2="15" y2="-20" />
-              <line x1="30" y1="0" x2="30" y2="-35" />
-              <line x1="45" y1="0" x2="45" y2="-15" />
-              <line x1="60" y1="0" x2="60" y2="-25" />
-              <line x1="75" y1="0" x2="75" y2="-40" />
-              <line x1="90" y1="0" x2="90" y2="-20" />
-              <line x1="105" y1="0" x2="105" y2="-30" />
-              <line x1="120" y1="0" x2="120" y2="-10" />
-              <line x1="135" y1="0" x2="135" y2="-25" />
-              <line x1="150" y1="0" x2="150" y2="-5" />
-            </g>
-          </svg>
+          <Image
+            src="/logo.png"
+            alt="Mesma Technologies"
+            width={160}
+            height={64}
+            className="h-14 w-auto drop-shadow-md object-contain"
+            priority
+          />
         </Link>
 
         <nav className="hidden md:flex gap-8 items-center text-sm font-medium">
