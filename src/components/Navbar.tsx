@@ -29,14 +29,14 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full glass-panel border-b border-white/20">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+      <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo.png"
             alt="Mesma Technologies"
-            width={160}
-            height={64}
-            className="h-14 w-auto drop-shadow-md object-contain"
+            width={220}
+            height={88}
+            className="h-20 w-auto drop-shadow-md object-contain"
             priority
           />
         </Link>
