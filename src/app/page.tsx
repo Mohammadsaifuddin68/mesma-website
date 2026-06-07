@@ -67,7 +67,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-24 w-full max-w-4xl px-4">
             <div className="flex flex-col items-center justify-center p-6 glass-panel rounded-2xl">
-              <span className="text-4xl font-bold text-deep-violet mb-2">50,000+</span>
+              <span className="text-4xl font-bold text-deep-violet mb-2">0</span>
               <span className="text-sm text-muted-foreground uppercase tracking-wider font-semibold">Calls Automated</span>
             </div>
             <div className="flex flex-col items-center justify-center p-6 glass-panel rounded-2xl">
