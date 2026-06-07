@@ -10,14 +10,17 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   company: z.string().min(2, "Company name is required."),
   email: z.string().email("Invalid email address."),
   phone: z.string().min(10, "Valid phone number is required."),
-  businessType: z.string().min(2, "Business type is required."),
+  service: z.string().min(2, "Service type is required."),
   message: z.string().min(10, "Message must be at least 10 characters."),
 });
 
@@ -29,16 +32,31 @@ export default function Contact() {
       company: "",
       email: "",
       phone: "",
-      businessType: "",
+      service: "",
       message: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real app, this would send an API request (e.g. to Resend)
-    console.log(values);
-    alert("Thank you for your inquiry! Our team will contact you shortly.");
-    form.reset();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    try {
+      await addDoc(collection(db, "leads"), {
+        ...values,
+        status: "new",
+        source: "website_contact_form",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      alert("Thank you for your inquiry! Our team will contact you shortly.");
+      form.reset();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -90,9 +108,20 @@ export default function Contact() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-muted-foreground">Industry / Business Type</label>
-                    <Input placeholder="e.g. Healthcare, Real Estate, E-commerce" className="bg-white/50 border-purple-100 focus-visible:ring-neon-purple h-12" {...form.register("businessType")} />
-                    {form.formState.errors.businessType && <p className="text-sm text-red-500">{form.formState.errors.businessType.message}</p>}
+                    <label className="text-sm font-semibold text-muted-foreground">Requested Service</label>
+                    <select 
+                      className="w-full h-12 px-4 bg-white/50 border border-purple-100 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-purple appearance-none"
+                      {...form.register("service")}
+                    >
+                      <option value="" disabled>Select a service</option>
+                      <option value="AI Receptionist">AI Receptionist</option>
+                      <option value="AI Customer Support">AI Customer Support</option>
+                      <option value="Appointment Booking">Appointment Booking</option>
+                      <option value="Lead Qualification">Lead Qualification</option>
+                      <option value="Outbound Automation">Outbound Automation</option>
+                      <option value="Custom Solution">Custom Solution</option>
+                    </select>
+                    {form.formState.errors.service && <p className="text-sm text-red-500">{form.formState.errors.service.message}</p>}
                   </div>
 
                   <div className="space-y-2">
@@ -105,8 +134,8 @@ export default function Contact() {
                     {form.formState.errors.message && <p className="text-sm text-red-500">{form.formState.errors.message.message}</p>}
                   </div>
 
-                  <Button type="submit" className="w-full bg-neon-purple hover:bg-deep-violet text-white h-14 text-lg rounded-xl shadow-[0_4px_14px_0_rgba(147,51,234,0.39)] transition-all">
-                    Submit Inquiry
+                  <Button type="submit" disabled={isSubmitting} className="w-full bg-neon-purple hover:bg-deep-violet text-white h-14 text-lg rounded-xl shadow-[0_4px_14px_0_rgba(147,51,234,0.39)] transition-all flex items-center justify-center gap-2">
+                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Inquiry"}
                   </Button>
                 </form>
               </GlassCard>
