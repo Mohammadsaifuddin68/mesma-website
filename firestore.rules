@@ -3,62 +3,79 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Function to check if the user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Function to check if the user is an active admin
-    function isActiveAdmin() {
-      return isAuthenticated() && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true;
+    function getAdminData() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)) 
+        ? get(/databases/$(database)/documents/admins/$(request.auth.uid)).data 
+        : null;
     }
 
-    // Function to get user permissions
+    function isActiveAdmin() {
+      return getAdminData() != null && getAdminData().active == true;
+    }
+
     function hasPermission(permission) {
       return isActiveAdmin() && (
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'super_admin' || 
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.permissions[permission] == true
+        getAdminData().role == 'super_admin' || 
+        getAdminData().permissions[permission] == true
       );
     }
 
-    // Leads collection
+    // ── Leads ────────────────────────────────────────────────────────────────
     match /leads/{leadId} {
-      // Public can submit contact forms
       allow create: if true;
-      
-      // Only admins with viewLeads permission can read
-      allow read: if hasPermission('viewLeads');
-      
-      // Only admins with editLeadStatus permission can update
+      allow read:   if hasPermission('viewLeads');
       allow update: if hasPermission('editLeadStatus');
-      
-      // Deleting leads is not explicitly required, but if needed:
       allow delete: if hasPermission('editLeadStatus');
     }
 
-    // Admins collection
+    // ── Admins / Editors ─────────────────────────────────────────────────────
     match /admins/{adminId} {
-      // Temporarily allow anyone to create their own admin profile (for the initial Super Admin script)
-      // We will restrict this after creation.
       allow create: if request.auth != null && request.auth.uid == adminId;
-
-      // Admins with manageAdmins can read all, others can read their own
-      allow read: if hasPermission('manageAdmins') || (request.auth != null && request.auth.uid == adminId);
-      
-      // Only admins with manageAdmins can update other users. Users can't update their own permissions.
+      allow read:   if hasPermission('manageAdmins') || (request.auth != null && request.auth.uid == adminId);
       allow update: if hasPermission('manageAdmins');
       allow delete: if hasPermission('deleteAdmins');
     }
 
-    // Audit Logs collection
+    // ── Audit Logs ───────────────────────────────────────────────────────────
     match /audit_logs/{logId} {
-      // Any active admin can write logs (the system creates them)
       allow create: if isActiveAdmin();
-      
-      // Only admins with auditLogs permission can read them
-      allow read: if hasPermission('auditLogs');
-      
-      allow update, delete: if false; // Logs are immutable
+      allow read:   if hasPermission('auditLogs');
+      allow update, delete: if false;
+    }
+
+    // ── Blogs ────────────────────────────────────────────────────────────────
+    match /blogs/{blogId} {
+      // Public can read published posts, Admins can read all
+      allow read: if hasPermission('viewBlogDashboard') || resource.data.status == 'published';
+
+      // Editors can create if they have createBlog permission
+      allow create: if hasPermission('createBlog');
+
+      // Editors can update their own posts, or others' if they have manageOthersPosts
+      allow update: if hasPermission('editBlog') && (
+        resource.data.authorId == request.auth.uid || hasPermission('manageOthersPosts')
+      );
+
+      // Delete requires deleteBlog permission
+      allow delete: if hasPermission('deleteBlog') && (
+        resource.data.authorId == request.auth.uid || hasPermission('manageOthersPosts')
+      );
+    }
+
+    // ── Blog Categories ──────────────────────────────────────────────────────
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if hasPermission('manageCategories');
+    }
+
+    // ── Blog Tags ────────────────────────────────────────────────────────────
+    match /tags/{tagId} {
+      allow read: if true;
+      allow write: if hasPermission('manageTags');
     }
     
   }

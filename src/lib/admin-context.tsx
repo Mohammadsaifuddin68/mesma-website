@@ -6,28 +6,42 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
 export interface AdminPermissions {
+  // System
   dashboard: boolean;
+  settings: boolean;
+  analytics: boolean;
+  systemConfig: boolean;
+  // Leads
   viewLeads: boolean;
   editLeadStatus: boolean;
   exportLeads: boolean;
+  // Admin Management
   manageAdmins: boolean;
-  auditLogs: boolean;
-  settings: boolean;
   createAdmins: boolean;
   disableAdmins: boolean;
   deleteAdmins: boolean;
-  analytics: boolean;
-  systemConfig: boolean;
+  auditLogs: boolean;
+  // Blog CMS
+  viewBlogDashboard: boolean;
+  createBlog: boolean;
+  editBlog: boolean;
+  deleteBlog: boolean;
+  publishBlog: boolean;
+  uploadMedia: boolean;
+  manageCategories: boolean;
+  manageTags: boolean;
+  manageOthersPosts: boolean;
 }
 
 export interface AdminProfile {
   uid: string;
   name: string;
   email: string;
-  role: "super_admin" | "admin";
+  role: "super_admin" | "admin" | "editor";
   active: boolean;
   permissions: AdminPermissions;
-  createdAt: any;
+  createdAt: unknown;
+  jobTitle?: string;
 }
 
 interface AdminContextType {

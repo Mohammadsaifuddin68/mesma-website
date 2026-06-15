@@ -66,7 +66,7 @@ export default function Contact() {
       {/* HEADER */}
       <section className="pt-32 pb-16 px-4">
         <div className="container mx-auto text-center max-w-4xl">
-          <h1 className="text-5xl md:text-7xl font-bold font-heading text-foreground mb-6">Let's <span className="bg-gradient-to-r from-deep-violet via-neon-purple to-soft-purple text-transparent bg-clip-text">Automate</span> Your Voice</h1>
+          <h1 className="text-5xl md:text-7xl font-bold font-heading text-foreground mb-6">Let&apos;s <span className="bg-gradient-to-r from-deep-violet via-neon-purple to-soft-purple text-transparent bg-clip-text">Automate</span> Your Voice</h1>
           <p className="text-xl text-muted-foreground">Book a demo or reach out to our enterprise sales team. We'll show you exactly how Mesma can transform your call volume into revenue.</p>
         </div>
       </section>
@@ -127,7 +127,7 @@ export default function Contact() {
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-muted-foreground">How can we help?</label>
                     <Textarea 
-                      placeholder="Tell us about your current call volume and what you're looking to automate..." 
+                      placeholder="Tell us about your current call volume and what you&apos;re looking to automate..." 
                       className="bg-white/50 border-purple-100 focus-visible:ring-neon-purple min-h-[120px] resize-none" 
                       {...form.register("message")} 
                     />

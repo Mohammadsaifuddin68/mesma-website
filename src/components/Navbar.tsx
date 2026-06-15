@@ -66,8 +66,9 @@ export function Navbar() {
               </div>
             )}
           </div>
-          <Link href="#industries" className="hover:text-neon-purple transition-colors">Industries</Link>
-          <Link href="#pricing" className="hover:text-neon-purple transition-colors">Pricing</Link>
+          <Link href="/industries" className="hover:text-neon-purple transition-colors">Industries</Link>
+          <Link href="/blogs" className="hover:text-neon-purple transition-colors">Blog</Link>
+          <Link href="/pricing" className="hover:text-neon-purple transition-colors">Pricing</Link>
           <Link href="/about" className="hover:text-neon-purple transition-colors">About</Link>
           <Link href="/contact" className="hover:text-neon-purple transition-colors">Contact</Link>
         </nav>

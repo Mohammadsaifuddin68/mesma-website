@@ -266,7 +266,7 @@ export default function Home() {
               <div className="flex gap-1">
                 {/* Simulated Audio Wave */}
                 {[...Array(12)].map((_, i) => (
-                  <div key={i} className="w-1 bg-white/40 rounded-full animate-pulse" style={{ height: `${Math.random() * 20 + 8}px`, animationDelay: `${i * 0.1}s` }}></div>
+                  <div key={i} className="w-1 bg-white/40 rounded-full animate-pulse" style={{ height: `${((i * 7) % 20 + 8)}px`, animationDelay: `${i * 0.1}s` }}></div>
                 ))}
               </div>
             </div>

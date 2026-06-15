@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
 
             <div className="bg-white/60 backdrop-blur-sm border border-purple-100 rounded-2xl p-8">
               <p className="text-muted-foreground leading-relaxed">
-                Mesma Technologies ("Mesma", "we", "our", or "us") provides AI-powered communication automation services, including AI Receptionist, AI Customer Support, Appointment Booking, Lead Qualification, and Outbound Automation. This Privacy Policy explains how we handle information when you use our website and services.
+                Mesma Technologies (&quot;Mesma&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) provides AI-powered communication automation services, including AI Receptionist, AI Customer Support, Appointment Booking, Lead Qualification, and Outbound Automation. This Privacy Policy explains how we handle information when you use our website and services.
               </p>
             </div>
 

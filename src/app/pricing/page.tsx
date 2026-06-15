@@ -48,7 +48,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-neon-purple mt-0.5 flex-shrink-0" />
-                  <span><strong>Voice Cloning & Selection:</strong> Pick from premium voices or clone an existing representative's voice.</span>
+                  <span><strong>Voice Cloning & Selection:</strong> Pick from premium voices or clone an existing representative&apos;s voice.</span>
                 </li>
               </ul>
               

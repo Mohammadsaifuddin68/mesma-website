@@ -18,25 +18,56 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { addDoc } from "firebase/firestore";
 
-const PERMISSION_LABELS: { key: keyof AdminPermissions; label: string; description: string }[] = [
-  { key: "dashboard", label: "Dashboard Access", description: "View the main dashboard and KPIs" },
-  { key: "viewLeads", label: "View Leads", description: "View all lead submissions" },
-  { key: "editLeadStatus", label: "Edit Lead Status", description: "Update the pipeline status of leads" },
-  { key: "exportLeads", label: "Export Leads", description: "Export leads as a CSV file" },
-  { key: "manageAdmins", label: "Admin Management", description: "View and manage admin users" },
-  { key: "createAdmins", label: "Create Admins", description: "Invite new admin users" },
-  { key: "disableAdmins", label: "Disable Admins", description: "Enable or disable admin accounts" },
-  { key: "deleteAdmins", label: "Delete Admins", description: "Permanently delete admin accounts" },
-  { key: "auditLogs", label: "Audit Logs", description: "Access the full audit trail" },
-  { key: "settings", label: "Settings Access", description: "Access the settings page" },
-  { key: "analytics", label: "Analytics", description: "View analytics and reports" },
-  { key: "systemConfig", label: "System Configuration", description: "Configure system settings" },
+const PERMISSION_CATEGORIES: { category: string; permissions: { key: keyof AdminPermissions; label: string; description: string }[] }[] = [
+  {
+    category: "System",
+    permissions: [
+      { key: "dashboard", label: "Dashboard Access", description: "View the main dashboard and KPIs" },
+      { key: "settings", label: "Settings Access", description: "Access the settings page" },
+      { key: "analytics", label: "Analytics", description: "View analytics and reports" },
+      { key: "systemConfig", label: "System Configuration", description: "Configure system settings" },
+    ]
+  },
+  {
+    category: "Leads CRM",
+    permissions: [
+      { key: "viewLeads", label: "View Leads", description: "View all lead submissions" },
+      { key: "editLeadStatus", label: "Edit Lead Status", description: "Update the pipeline status of leads" },
+      { key: "exportLeads", label: "Export Leads", description: "Export leads as a CSV file" },
+    ]
+  },
+  {
+    category: "Admin Management",
+    permissions: [
+      { key: "manageAdmins", label: "Admin Management", description: "View and manage admin users" },
+      { key: "createAdmins", label: "Create Admins", description: "Invite new admin users" },
+      { key: "disableAdmins", label: "Disable Admins", description: "Enable or disable admin accounts" },
+      { key: "deleteAdmins", label: "Delete Admins", description: "Permanently delete admin accounts" },
+      { key: "auditLogs", label: "Audit Logs", description: "Access the full audit trail" },
+    ]
+  },
+  {
+    category: "Blog CMS",
+    permissions: [
+      { key: "viewBlogDashboard", label: "Editor Access", description: "Access the Editor portal" },
+      { key: "createBlog", label: "Create Blogs", description: "Create new blog posts and save drafts" },
+      { key: "editBlog", label: "Edit Own Blogs", description: "Edit their own blog posts" },
+      { key: "manageOthersPosts", label: "Edit All Blogs", description: "Edit blog posts created by others" },
+      { key: "publishBlog", label: "Publish Blogs", description: "Publish or unpublish blogs publicly" },
+      { key: "deleteBlog", label: "Delete Blogs", description: "Delete blog posts" },
+      { key: "uploadMedia", label: "Upload Media", description: "Upload images to the media library" },
+      { key: "manageCategories", label: "Manage Categories", description: "Create and edit blog categories" },
+      { key: "manageTags", label: "Manage Tags", description: "Create and edit blog tags" },
+    ]
+  }
 ];
 
 const DEFAULT_PERMISSIONS: AdminPermissions = {
-  dashboard: true, viewLeads: true, editLeadStatus: false, exportLeads: false,
-  manageAdmins: false, createAdmins: false, disableAdmins: false, deleteAdmins: false,
-  auditLogs: false, settings: true, analytics: false, systemConfig: false,
+  dashboard: true, settings: true, analytics: false, systemConfig: false,
+  viewLeads: true, editLeadStatus: false, exportLeads: false,
+  manageAdmins: false, createAdmins: false, disableAdmins: false, deleteAdmins: false, auditLogs: false,
+  viewBlogDashboard: false, createBlog: false, editBlog: false, deleteBlog: false,
+  publishBlog: false, uploadMedia: false, manageCategories: false, manageTags: false, manageOthersPosts: false,
 };
 
 const inviteSchema = z.object({
@@ -315,22 +346,32 @@ export default function UsersPage() {
               </div>
               <button onClick={() => setPermModal(null)} className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"><X className="w-4 h-4" /></button>
             </div>
-            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-              {PERMISSION_LABELS.map(({ key, label, description }) => (
-                <label key={key} className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${pendingPerms[key] ? "bg-blue-500/5 border-blue-500/20" : "bg-slate-900/40 border-slate-800/60 hover:border-slate-700"} ${permModal.role === "super_admin" ? "opacity-60 cursor-not-allowed" : ""}`}>
-                  <div>
-                    <p className="text-sm font-medium text-slate-300">{label}</p>
-                    <p className="text-xs text-slate-600 mt-0.5">{description}</p>
-                  </div>
-                  <div className="flex-shrink-0 ml-4">
-                    <div
-                      className={`relative w-11 h-6 rounded-full transition-colors ${pendingPerms[key] ? "bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.4)]" : "bg-slate-700"}`}
-                      onClick={() => permModal.role !== "super_admin" && setPendingPerms({ ...pendingPerms, [key]: !pendingPerms[key] })}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${pendingPerms[key] ? "left-6" : "left-1"}`} />
-                    </div>
-                  </div>
-                </label>
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+              {PERMISSION_CATEGORIES.map((cat) => (
+                <div key={cat.category} className="space-y-2">
+                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{cat.category}</h3>
+                  {cat.permissions.map(({ key, label, description }) => (
+                    <label key={key} className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${pendingPerms[key] ? "bg-blue-500/5 border-blue-500/20" : "bg-slate-900/40 border-slate-800/60 hover:border-slate-700"} ${permModal.role === "super_admin" ? "opacity-60 cursor-not-allowed" : ""}`}>
+                      <div>
+                        <p className="text-sm font-medium text-slate-300">{label}</p>
+                        <p className="text-xs text-slate-600 mt-0.5">{description}</p>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        <div
+                          className={`relative w-11 h-6 rounded-full transition-colors ${pendingPerms[key] ? "bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.4)]" : "bg-slate-700"}`}
+                          onClick={(e) => {
+                            if (permModal.role !== "super_admin") {
+                              e.preventDefault();
+                              setPendingPerms({ ...pendingPerms, [key]: !pendingPerms[key] });
+                            }
+                          }}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${pendingPerms[key] ? "left-6" : "left-1"}`} />
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               ))}
             </div>
             <div className="flex gap-3 mt-5 flex-shrink-0">
