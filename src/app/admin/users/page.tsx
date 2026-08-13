@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, setDoc } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { initializeApp, deleteApp } from "firebase/app";
 import { db, app } from "@/lib/firebase";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { useAdmin, AdminPermissions } from "@/lib/admin-context";
@@ -73,6 +74,7 @@ const DEFAULT_PERMISSIONS: AdminPermissions = {
 const inviteSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Valid email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal("")),
   jobTitle: z.string().optional(),
 });
 
@@ -98,7 +100,7 @@ export default function UsersPage() {
 
   const form = useForm<z.infer<typeof inviteSchema>>({
     resolver: zodResolver(inviteSchema),
-    defaultValues: { name: "", email: "", jobTitle: "" },
+    defaultValues: { name: "", email: "", password: "", jobTitle: "" },
   });
 
   useEffect(() => {
@@ -114,16 +116,33 @@ export default function UsersPage() {
   const onInviteSubmit = async (values: z.infer<typeof inviteSchema>) => {
     if (!can("createAdmins")) return;
     setInviting(true);
+    let tempApp;
     try {
-      // Generate a temporary password (user will reset via email)
-      const tempPassword = `TempPass@${Math.random().toString(36).slice(2, 10)}!`;
-      
-      // Create user in Firebase Auth
-      const secondaryApp = getAuth(app);
-      const cred = await createUserWithEmailAndPassword(secondaryApp, values.email, tempPassword);
+      // Use the provided password, or generate a temporary one
+      const passwordToUse = values.password && values.password.trim().length >= 6
+        ? values.password
+        : `TempPass@${Math.random().toString(36).slice(2, 10)}!`;
+
+      // Get configuration details for secondary app
+      const firebaseConfig = {
+        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+      };
+
+      // Create a temporary secondary app to avoid logging out the current admin
+      const tempAppName = `temp-admin-app-${Date.now()}`;
+      tempApp = initializeApp(firebaseConfig, tempAppName);
+      const tempAuth = getAuth(tempApp);
+
+      // Create user in Firebase Auth using the temporary app
+      const cred = await createUserWithEmailAndPassword(tempAuth, values.email, passwordToUse);
       const newUid = cred.user.uid;
 
-      // Create admin document in Firestore using the UID as the document ID
+      // Create admin document in Firestore using the primary app's database connection
       await setDoc(doc(db, "admins", newUid), {
         uid: newUid,
         name: values.name,
@@ -136,8 +155,11 @@ export default function UsersPage() {
         createdAt: new Date(),
       });
 
-      // Send password reset email so the user can set their own password
-      await sendPasswordResetEmail(secondaryApp, values.email);
+      // Send password reset email using the temporary app's Auth
+      await sendPasswordResetEmail(tempAuth, values.email);
+
+      // Sign out from the temporary app
+      await signOut(tempAuth);
 
       if (adminProfile?.email) {
         await logAuditAction({ adminEmail: adminProfile.email, action: "user_created", targetUser: values.email });
@@ -150,6 +172,13 @@ export default function UsersPage() {
       console.error(err);
       alert(err.message || "Failed to create user");
     } finally {
+      if (tempApp) {
+        try {
+          await deleteApp(tempApp);
+        } catch (e) {
+          console.error("Error deleting secondary app:", e);
+        }
+      }
       setInviting(false);
     }
   };
@@ -317,6 +346,11 @@ export default function UsersPage() {
                   <label className="text-sm text-slate-300">Email Address *</label>
                   <input {...form.register("email")} type="email" placeholder="user@mesma.co.in" className="w-full h-11 px-4 bg-slate-950/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500/60 text-white placeholder:text-slate-600 text-sm transition-all" />
                   {form.formState.errors.email && <p className="text-xs text-red-400">{form.formState.errors.email.message}</p>}
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm text-slate-300">Password <span className="text-slate-600">(optional)</span></label>
+                  <input {...form.register("password")} type="password" placeholder="Min. 6 characters" className="w-full h-11 px-4 bg-slate-950/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-blue-500/60 text-white placeholder:text-slate-600 text-sm transition-all" />
+                  {form.formState.errors.password && <p className="text-xs text-red-400">{form.formState.errors.password.message}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-sm text-slate-300">Job Title <span className="text-slate-600">(optional)</span></label>
