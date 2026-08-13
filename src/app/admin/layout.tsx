@@ -13,7 +13,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
   return (
-    <div className="min-h-screen bg-[#071426] text-slate-50 flex font-sans selection:bg-blue-500/30">
+    <div className="admin-portal min-h-screen bg-[#071426] text-slate-50 flex font-sans selection:bg-blue-500/30">
       <AuthGuard>
         {!isAuthRoute && <Sidebar />}
         <main className="flex-1 flex flex-col relative overflow-hidden min-h-screen">

@@ -1,35 +1,39 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: hsl(215 28% 9%); /* Deep Navy */
-    --foreground: hsl(210 40% 98%);
-    --card: hsl(222 47% 11%);
-    --card-foreground: hsl(210 40% 98%);
-    --popover: hsl(222 47% 11%);
-    --popover-foreground: hsl(210 40% 98%);
-    --primary: hsl(190 100% 50%); /* Neon Blue #00D4FF */
-    --primary-foreground: hsl(222 47% 11%);
-    --secondary: hsl(217 33% 17%);
-    --secondary-foreground: hsl(210 40% 98%);
-    --muted: hsl(217 33% 17%);
-    --muted-foreground: hsl(215 20.2% 65.1%);
-    --accent: hsl(217 33% 17%);
-    --accent-foreground: hsl(210 40% 98%);
-    --destructive: hsl(0 62.8% 30.6%);
-    --destructive-foreground: hsl(210 40% 98%);
-    --border: hsl(217 33% 17%);
-    --input: hsl(217 33% 17%);
-    --ring: hsl(190 100% 50%);
-    --radius: 0.5rem;
-  }
+.admin-portal {
+  --background: hsl(215 28% 9%); /* Deep Navy */
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(222 47% 11%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(222 47% 11%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: hsl(190 100% 50%); /* Neon Blue #00D4FF */
+  --primary-foreground: hsl(222 47% 11%);
+  --secondary: hsl(217 33% 17%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --muted: hsl(217 33% 17%);
+  --muted-foreground: hsl(215 20.2% 65.1%);
+  --accent: hsl(217 33% 17%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(217 33% 17%);
+  --input: hsl(217 33% 17%);
+  --ring: hsl(190 100% 50%);
+  --radius: 0.5rem;
+
+  /* Explicit text color for the admin portal container */
+  color: hsl(210 40% 98%);
 }
 
-@layer base {
-  body {
-    background-color: #071426;
-    color: #f1f5f9;
-  }
+/* Ensure all headers inside admin portal use the local foreground variable */
+.admin-portal h1,
+.admin-portal h2,
+.admin-portal h3,
+.admin-portal h4,
+.admin-portal h5,
+.admin-portal h6 {
+  color: hsl(210 40% 98%) !important;
 }
 
 /* Glassmorphism Utilities */
